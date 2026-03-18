@@ -1,98 +1,132 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# OCR 图片文字识别服务 / OCR Image Text Recognition Service
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+基于 NestJS + 阿里云 OCR API 的图片文字识别服务。
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+An image text recognition service based on NestJS and Alibaba Cloud OCR API.
 
-## Description
+## 功能特性 / Features
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- 支持上传图片进行文字识别 / Support uploading images for text recognition
+- 支持多种图片格式 (PNG, JPG, JPEG, GIF, BMP, WEBP) / Support multiple image formats
+- 基于阿里云 OCR API / Based on Alibaba Cloud OCR API
+- 统一响应格式 / Unified response format
 
-## Project setup
+## 环境配置 / Environment Setup
+
+### 1. 安装依赖 / Install Dependencies
 
 ```bash
-$ yarn install
+yarn install
 ```
 
-## Compile and run the project
+### 2. 配置环境变量 / Configure Environment Variables
+
+在项目根目录创建 `.env` 文件，添加阿里云 AccessKey 凭证：
+
+Create a `.env` file in the project root and add your Alibaba Cloud AccessKey credentials:
+
+```env
+# 阿里云 AccessKey ID / Alibaba Cloud AccessKey ID
+ALIBABA_CLOUD_ACCESS_KEY_ID=your_access_key_id
+
+# 阿里云 AccessKey Secret / Alibaba Cloud AccessKey Secret
+ALIBABA_CLOUD_ACCESS_KEY_SECRET=your_access_key_secret
+```
+
+> ⚠️ 请替换为你的实际阿里云 AccessKey。请访问阿里云控制台获取：https://console.console.aliyun.com/
+> 
+> ⚠️ Please replace with your actual Alibaba Cloud AccessKey. Get it from: https://console.console.aliyun.com/
+
+## 启动服务 / Start Service
 
 ```bash
-# development
-$ yarn run start
+# 开发模式 (热更新) / Development mode with hot reload
+yarn run start:dev
 
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+# 生产模式 / Production mode
+yarn run start:prod
 ```
 
-## Run tests
+服务启动后访问 http://localhost:3000
+
+After starting, visit http://localhost:3000
+
+## API 接口 / API Endpoints
+
+### 1. 上传图片 / Upload Image
+
+上传图片到服务器进行 OCR 识别。
+
+Upload image to server for OCR recognition.
+
+```
+POST /ocr/upload
+Content-Type: multipart/form-data
+
+参数 / Parameter:
+  - file: 图片文件 (最大 2MB) / Image file (max 2MB)
+```
+
+**示例 / Example:**
 
 ```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+curl -X POST "http://localhost:3000/ocr/upload" -F "file=@your-image.png"
 ```
 
-## Deployment
+**响应 / Response:**
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
+```json
+{
+  "data": {
+    "message": "上传成功 / Upload successful",
+    "filePath": "uploads/file-1234567890.png",
+    "fileName": "file-1234567890.png"
+  },
+  "status": 0,
+  "success": true,
+  "time": 1700000000000
+}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 2. 访问上传的文件 / Access Uploaded Files
 
-## Resources
+上传的图片可以通过以下地址访问：
 
-Check out a few resources that may come in handy when working with NestJS:
+Uploaded images can be accessed at:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```
+http://localhost:3000/uploads/文件名
+http://localhost:3000/uploads/filename
+```
 
-## Support
+## 项目结构 / Project Structure
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```
+src/
+├── common/
+│   └── respInterceptor.ts    # 响应拦截器 / Response interceptor
+├── ocr/
+│   ├── ocr.controller.ts     # OCR 控制器 / OCR controller
+│   ├── ocr.service.ts        # OCR 服务 / OCR service
+│   └── ocr.module.ts         # OCR 模块 / OCR module
+├── app.module.ts             # 应用模块 / Application module
+└── main.ts                   # 入口文件 / Entry file
+```
 
-## Stay in touch
+## 技术栈 / Tech Stack
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- **NestJS** - Node.js 框架 / Node.js framework
+- **TypeScript** - 编程语言 / Programming language
+- **Multer** - 文件上传 / File upload
+- **阿里云 OCR API** - 文字识别服务 / Text recognition service
 
-## License
+## 注意事项 / Notes
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+1. 上传的图片会保存在 `uploads` 目录下
+   - Uploaded images are saved in the `uploads` directory
+
+2. `.env` 文件包含敏感信息，请勿提交到版本控制
+   - The `.env` file contains sensitive information, please do not commit to version control
+
+3. 确保 `uploads` 目录存在
+   - Make sure the `uploads` directory exists
