@@ -1,0 +1,2 @@
+# nest_OCR_server
+nestjs搭建的基于阿里SDK的OCR服务模块
